@@ -18,7 +18,7 @@ services:
     networks:
       - webbylab_net
     stop_grace_period: 10s
-    restart: unless-stopped
+    restart: always
 
   adminer:
     image: adminer
