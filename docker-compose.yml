@@ -1,0 +1,50 @@
+version: "3.8"
+
+services:
+  mysql:
+    image: mysql:5.6
+    container_name: ${COMPOSE_PROJECT_NAME}_mysql
+    hostname: mysql
+    volumes:
+      - mysql_conf:/etc/mysql
+      - mysql_data:/var/lib/mysql
+      - mysql_log:/var/log/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=l17EVf7x55609U9b
+      - DEFAULTS_FILE=/etc/mysql/my.cnf
+      - COMPOSE_PROJECT_NAME=webbylab
+    expose:
+      - "3306"
+    networks:
+      - webbylab_net
+    stop_grace_period: 10s
+    restart: unless-stopped
+
+  adminer:
+    image: adminer
+    container_name: ${COMPOSE_PROJECT_NAME}_adminer
+    hostname: adminer
+    restart: always
+    environment:
+      - COMPOSE_PROJECT_NAME=webbylab
+    depends_on:
+      - mysql
+    ports:
+      - 8080:8080
+    networks:
+      - webbylab_net
+
+# Top-Level Networks
+networks:
+  webbylab_net:
+    name: webbylab_net
+    ipam:
+      driver: default
+      config:
+        - subnet: "172.20.0.0/24"
+
+# Top-Level Volumes
+volumes:
+   mysql_conf:
+   mysql_data:
+   mysql_log:
